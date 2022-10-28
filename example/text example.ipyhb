@@ -1,1 +1,178 @@
+//
+def subset1(array,num):
 
+    if num == 0 or num < 1:
+        return None
+    elif len(array) == 0:
+        return None
+    else:
+        if abs(array[0] - num )< 0.001 :
+            return [array[0]]
+        else:
+            with_v = subset1(array[1:],(num - array[0])) 
+            if with_v:
+                return [array[0]] + with_v
+            else:
+                return subset1(array[1:],num)
+//
+//
+import numpy as np 
+import pandas as pd
+from pandas import Series,DataFrame
+from numpy import random,mat
+data = pd.read_excel('./13 bus-Feeder.xlsx',header=None) # 读取文件路径
+data = data.values
+Mlen = len(np.unique([i for j in data for i in j]))
+Max = data.max()+1
+M=np.zeros((Max,Max),dtype=float)#行列数是所有节点的个数
+print(Max)
+
+u=0
+p=0.01
+noise = []
+parent1 = []
+child = []
+Input_one = []
+Input_two = []
+
+for j in range(20):
+    n = np.random.normal(u,p,M.shape[1])#n = np.random.normal(u,p,10)
+    c = np.random.randint(25, size=M.shape[1])#uniform,randint
+    input_one = n + c
+    input_one = input_one.tolist()
+    input_two = input_one.copy()
+    Input_one.append(input_one)
+    Input_two.append(input_two)
+    for i in data:
+        print(i)
+        node_a = i[1]
+        node_b = i[0]
+        print(node_a)
+        print(node_b)
+        M[node_a][node_b]=1
+        M[node_b][node_a]=1
+        A = input_one[node_a] + input_one[node_b]
+        input_one[node_b] = A
+        parent1.append(A)
+        input_three = input_two + input_one
+    child.append(input_three)
+print(M)
+//
+//
+#parent = [parent1[i:i + len(data)] for i in range(0, len(parent1), len(data))]
+nested_i = child
+nested_d = Input_one
+leni=len(child[0])
+#lend=len(parent[0])
+nested_d1=[i for j in nested_d for i in j]
+nested_i1=[i for j in nested_d for i in j]
+
+parent = []
+for n in range(len(Input_one)):
+    A = [x for x in Input_one[n] if x not in Input_two[n]]
+    parent.append(A)
+
+lend=len(parent[0])
+lend
+//
+//
+from collections import Counter
+from statistics import mode
+from operator import itemgetter
+import itertools
+result_dic={}
+lst1=[]
+lst2=[]
+Index=[]
+subset_list1=[]
+x1 = -1
+for t in nested_d:
+    x = 0
+    x1 = x1+1
+    for num in parent[x]:
+        num = parent[x1][x]
+        print(nested_d[x1].index(num,x))
+        x = x+1
+        y = 0
+        subset_list = []
+        for i in nested_i[x1]:
+            newnums=[i for i in nested_i[x1] if i<num]
+            a=subset1(newnums[y:],num)#克服动态规划只能输出第一个匹配的结果，每次遍历完子列表后将第一个数据删除
+            lst1.append(a)
+            y=y+1
+            list.clear(Index)
+            list.clear(lst2)
+            if a != None:   
+                for n in a:
+                    if a in Input_one[x1]:
+                        A=[i for i,x in enumerate(Input_one[x1]) if x==n]#获取子节点的index，但是由于同一个数字可能有多个index
+                    else:
+                        A=[i for i,x in enumerate(Input_two[x1]) if x==n]#获取子节点的index，但是由于同一个数字可能有多个index
+                    Index.append(A)
+                B=Index
+                C=list(itertools.product(*B))#所以把所有index排列组合得到结果            
+            lst2.append(C)
+            result_dic.clear()
+            for item_str in lst2:
+                for m in item_str:
+                    if m not in result_dic:
+                        result_dic[m]=1
+                    else:
+                        result_dic[m]+=1#新建一个字典，对子节点index合集投票
+                        values_list = list(result_dic.values())
+                counts = Counter(result_dic)
+                maxcount = [value for value, count in counts.most_common()]
+                subset_list.append(maxcount)
+        subset_list1.append(subset_list)
+//
+//
+m = np.zeros((Max,Max),dtype=float)#创建验证用空列表
+row=[]
+fin=[]
+fin1=[]
+x=0
+for i in parent[0]:   
+    #i = parent[x]
+    dindex1 = nested_d[0].index(i)#获取父节点的index，为了便于验证，加上子节点的数量)
+    A=subset_list1[x::lend]#根据父节点的个数隔位取对应的子集
+    x=x+1
+    list.clear(fin)
+    print(dindex1)
+    for i in A:
+        for j in i:
+            for s in j:
+                fin.append(j)
+                maxlabel = max(fin,key=fin.count)
+                maxlabel1=[i for j in maxlabel for i in j]
+    for item in maxlabel1:
+        if item != dindex1:
+            if m[:,item].any()== 0:
+                row.clear()
+                row.append(item)
+                print(row)
+                m[dindex1][row]=1
+//
+//
+mt=m.T
+m=m+mt
+m
+//
+//
+flatten_arr1 = np.ravel(M)
+flatten_arr2 = np.ravel(m)
+
+print (flatten_arr1)
+print (flatten_arr2)#将两个矩阵平铺
+test = np.equal(flatten_arr1,flatten_arr2)
+count1 = sum(test[test == True])#两个矩阵相同数据的个数
+H=m.shape[0]
+L=m.shape[1]
+R=H*L#矩阵的长×宽=矩阵数据数量
+accuracy=count1/R
+accuracy#准确率：相同数据的个数/原有数据数量
+//
+//
+end
+
+
+        
