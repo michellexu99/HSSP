@@ -1,5 +1,8 @@
 # Introduction to the HSSP
 The HSSP method is a new method to identify the power grid topology, which can realize the recognition of multi-level power grid topology. Compared with other methods, its advantages are fast recognition speed and high accuracy.
+The following is a simple 13-node network structure. In short, we want to use the HSSP algorithm to know the topology in the red box.
+![image](https://github.com/michellexu99/HSSP/blob/main/image/13nodes.PNG)
+![image](https://github.com/michellexu99/HSSP/blob/main/image/distribution.PNG)
 
 
 *Related technologies：Subset sum algorithm, conservation of energy, graph theory*
@@ -18,3 +21,5 @@ The whole algorithm is divided into the following five parts:
   
 # Example
 In the example folder is a simple example.
+
+
